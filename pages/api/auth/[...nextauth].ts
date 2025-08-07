@@ -3,6 +3,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { supabase } from '@/lib/supabase';
 
+import { SessionStrategy } from 'next-auth';
+
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -96,7 +98,7 @@ export const authOptions = {
     },
   },
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as SessionStrategy,
   },
   pages: {
     signIn: '/auth/login',

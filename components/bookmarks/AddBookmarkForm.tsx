@@ -40,9 +40,12 @@ const AddBookmarkForm: React.FC<AddBookmarkFormProps> = ({
       onBookmarkAdded(newBookmark);
       setUrl('');
       setTags('');
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      } finally {
       setLoading(false);
     }
   };
