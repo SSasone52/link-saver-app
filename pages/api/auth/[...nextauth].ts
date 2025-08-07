@@ -60,7 +60,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account }: { token: any, user: any, account: any }) {
       if (account?.provider === 'google' && user) {
         // Check if user exists in public.users, if not, insert them
         const { data: existingUser, error: fetchError } = await supabase
