@@ -1,25 +1,30 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "./auth/[...nextauth]";
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
 import { Bookmark } from '@/lib/types';
 
 const JINA_AI_SUMMARY_ENDPOINT = 'https://r.jina.ai/';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, authOptions);
+  const supabaseServer = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      cookies: {
+        get: (name: string) => req.cookies[name],
+        set: (name: string, value: string, options: any) => {
+          res.setHeader('Set-Cookie', `${name}=${value}; Path=/; Max-Age=${options.maxAge || 2592000}`);
+        },
+        remove: (name: string, options: any) => {
+          res.setHeader('Set-Cookie', `${name}=; Path=/; Max-Age=0`);
+        },
+      },
+    }
+  );
 
-  if (!session || !session.user?.id || !session.supabaseAccessToken || !session.refreshToken) {
+  const { data: { session } } = await supabaseServer.auth.getSession();
+
+  if (!session || !session.user?.id) {
     return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  const { error: sessionError } = await supabase.auth.setSession({
-    access_token: session.supabaseAccessToken,
-    refresh_token: session.refreshToken,
-  });
-
-  if (sessionError) {
-    return res.status(401).json({ message: 'Error setting Supabase session' });
   }
 
   const userId = session.user.id;
@@ -60,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           // Continue without summary if fetching fails
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServer
           .from('bookmarks')
           .insert({
             user_id: userId,
@@ -89,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case 'GET':
       try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServer
           .from('bookmarks')
           .select('*')
           .eq('user_id', userId)
@@ -116,7 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(400).json({ message: 'Bookmark ID is required' });
         }
 
-        const { error } = await supabase
+        const { error } = await supabaseServer
           .from('bookmarks')
           .delete()
           .eq('id', id as string)
