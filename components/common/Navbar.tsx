@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import DarkModeToggle from './DarkModeToggle';
 
 interface NavbarProps {
@@ -8,7 +8,12 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
-  const { data: session } = useSession();
+  const session = useSession();
+  const supabase = useSupabaseClient();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <nav className="bg-white dark:bg-[#1E1E1E] p-4 shadow-md transition-colors duration-300">
@@ -26,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
                   </Link>
                 </li>
                 <li>
-                  <button onClick={() => signOut()} className="hover:text-[#007BFF] dark:hover:text-[#66B2FF] transition duration-300 ease-in-out">
+                  <button onClick={handleSignOut} className="hover:text-[#007BFF] dark:hover:text-[#66B2FF] transition duration-300 ease-in-out">
                     Sign Out
                   </button>
                 </li>
@@ -36,11 +41,6 @@ const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
                 <li>
                   <Link href="/auth/login" className="hover:text-[#007BFF] dark:hover:text-[#66B2FF] transition duration-300 ease-in-out">
                     Login
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/auth/signup" className="hover:text-[#007BFF] dark:hover:text-[#66B2FF] transition duration-300 ease-in-out">
-                    Sign Up
                   </Link>
                 </li>
               </>

@@ -27,11 +27,11 @@ const Button = <E extends React.ElementType = typeof defaultElement>({
     'font-semibold py-2 px-4 rounded-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2';
   const variants = {
     primary:
-      'bg-[#007BFF] hover:bg-[#0056b3] text-white focus:ring-[#007BFF] dark:bg-[#66B2FF] dark:hover:bg-[#3399FF]',
+      'bg-blue-700 hover:bg-blue-800 text-white focus:ring-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700',
     secondary:
-      'bg-[#F8F8F8] hover:bg-[#E0E0E0] text-[#212121] focus:ring-[#757575] dark:bg-[#1E1E1E] dark:hover:bg-[#2C2C2C] dark:text-[#E0E0E0]',
+      'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200',
     danger:
-      'bg-[#DC3545] hover:bg-[#B02A37] text-white focus:ring-[#DC3545] dark:bg-[#FF6B6B] dark:hover:bg-[#FF3333]',
+      'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 dark:bg-red-700 dark:hover:bg-red-800',
   };
   const sizes = {
     sm: 'text-sm px-3 py-1.5',

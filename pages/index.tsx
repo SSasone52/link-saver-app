@@ -1,11 +1,8 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import Button from '@/components/ui/Button';
 
 export default function Home() {
-  const { data: session } = useSession();
-
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <Head>
@@ -23,20 +20,9 @@ export default function Home() {
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          {!session ? (
-            <>
-              <Button size="lg" as={Link} href="/auth/signup" className="w-full sm:w-auto">
-                Get Started
-              </Button>
-              <Button size="lg" variant="secondary" as={Link} href="/auth/login" className="w-full sm:w-auto">
-                Login
-              </Button>
-            </>
-          ) : (
-            <Button size="lg" as={Link} href="/dashboard" className="w-full sm:w-auto">
-              Go to Dashboard
-            </Button>
-          )}
+          <Button size="lg" as={Link} href="/dashboard" className="w-full sm:w-auto">
+            Go to Dashboard
+          </Button>
         </div>
       </main>
     </div>

@@ -1,4 +1,4 @@
-import { useSession } from 'next-auth/react';
+import { useSession } from '@supabase/auth-helpers-react';
 import { User } from '@/lib/types';
 
 interface UseAuthReturn {
@@ -8,13 +8,13 @@ interface UseAuthReturn {
 }
 
 const useAuth = (): UseAuthReturn => {
-  const { data: session, status } = useSession();
+  const session = useSession();
 
-  const isAuthenticated = status === 'authenticated';
+  const isAuthenticated = !!session;
   const user: User | null = session?.user
-    ? { id: session.user.id as string, email: session.user.email as string }
+    ? { id: session.user.id, email: session.user.email || '' }
     : null;
-  const isLoading = status === 'loading';
+  const isLoading = !session;
 
   return {
     isAuthenticated,

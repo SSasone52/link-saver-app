@@ -1,10 +1,10 @@
-import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 import { Bookmark } from '@/lib/types';
 import BookmarkList from '@/components/bookmarks/BookmarkList';
 import AddBookmarkForm from '@/components/bookmarks/AddBookmarkForm';
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
+import { createSupabaseBrowserClient } from '@/lib/supabase';
 
 interface DashboardProps {
   bookmarks: Bookmark[];
@@ -12,6 +12,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ bookmarks: initialBookmarks }) => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks);
+  const supabase = createSupabaseBrowserClient();
 
   const handleBookmarkAdded = (newBookmark: Bookmark) => {
     setBookmarks((prev) => [newBookmark, ...prev]);
@@ -35,23 +36,25 @@ const Dashboard: React.FC<DashboardProps> = ({ bookmarks: initialBookmarks }) =>
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
-
-  if (!session || !session.user?.id || !session.supabaseAccessToken || !session.refreshToken) {
-    return {
-      redirect: {
-        destination: '/auth/login',
-        permanent: false,
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      cookies: {
+        get: (name: string) => context.req.cookies[name],
+        set: (name: string, value: string, options: any) => {
+          context.res.appendHeader('Set-Cookie', `${name}=${value}; Path=/`);
+        },
+        remove: (name: string, options: any) => {
+          context.res.appendHeader('Set-Cookie', `${name}=; Path=/; Max-Age=0`);
+        },
       },
-    };
-  }
+    }
+  );
 
-  const { error: sessionError } = await supabase.auth.setSession({
-    access_token: session.supabaseAccessToken,
-    refresh_token: session.refreshToken,
-  });
+  const { data: { session } } = await supabase.auth.getSession();
 
-  if (sessionError) {
+  if (!session) {
     return {
       redirect: {
         destination: '/auth/login',
@@ -69,7 +72,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (error) {
     return {
       props: {
-        session,
         bookmarks: [],
       },
     };
@@ -77,7 +79,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      session,
       bookmarks: data as Bookmark[],
     },
   };

@@ -1,15 +1,21 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import { SessionProvider } from 'next-auth/react';
+import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import { createSupabaseBrowserClient } from '@/lib/supabase';
 import Layout from '@/components/common/Layout';
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
+  const supabaseClient = createSupabaseBrowserClient();
+
   return (
-    <SessionProvider session={session}>
+    <SessionContextProvider
+      supabaseClient={supabaseClient}
+      initialSession={pageProps.initialSession}
+    >
       <Layout>
         <Component {...pageProps} />
       </Layout>
-    </SessionProvider>
+    </SessionContextProvider>
   );
 }
 
